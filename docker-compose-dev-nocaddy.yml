@@ -1,0 +1,36 @@
+version: '2.4'
+
+services:
+    db:
+      container_name: ${COMPOSE_PROJECT_NAME}_db_dev
+      extends:
+        file: docker-compose-base.yml
+        service: db
+      environment:
+        MYSQL_ROOT_PASSWORD: "${MYSQL_PASSWORD}"
+        MYSQL_USER: "${MYSQL_USER}"
+      volumes:
+              ##TODO: mysql docker image logs to sdout, so where do we get logs?
+              - database-dev:/var/lib/mysql
+
+    wordpress:
+      container_name: ${COMPOSE_PROJECT_NAME}_app_dev
+      extends:
+        file: docker-compose-base.yml
+        service: wordpress
+      env_file: "${ENV_FILE}"
+      environment:
+              WORDPRESS_DB_HOST: db
+              WORDPRESS_DB_USER: "${MYSQL_USER}"
+              WORDPRESS_DB_PASSWORD: "${MYSQL_PASSWORD}"
+              WORDPRESS_DB_NAME: "${COMPOSE_PROJECT_NAME}"
+      depends_on:
+        - db
+      volumes:
+          - app-logs-dev:/var/www/html
+
+
+#TODO: for whatever reason volumes declaration has to be included here, not in docker-compose-base.yml file
+volumes:
+    database-dev: {}
+    app-logs-dev: {}

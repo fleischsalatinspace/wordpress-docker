@@ -1,0 +1,13 @@
+version: '2.4'
+#TODO: where do we need restart policy
+#TODO: cpu/mem limits
+
+services:
+    db:
+        image: mysql:5.7
+        restart: always
+
+    wordpress:
+        image: wordpress:${WORDPRESS_RELEASE}
+        volumes:
+          - ./config/php.conf.ini:/usr/local/etc/php/conf.d/php.ini
