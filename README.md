@@ -13,6 +13,11 @@ Easy to use docker-compose managed multi-container setup for running wordpress
 5. [Install](#Install)
     1. [Production](#Production)
     2. [Development](#Development)
+6. [Setup wordpress](#setup-wordpress)
+7. [Misc](#Misc)
+    1. [Email](#Email)
+    2. [Updating wordpress](#Updating-wordpress)
+    3. [Backup/Restore](#Backup/Restore)
 
 ## Features
 This repository contains files for running wordpress within a docker-compose managed multi-container setup, based on the [official docker community image](https://hub.docker.com/_/wordpress)  To enable non-tech savy people to use this repository, there are [administration scripts](#Administration) for tasks like starting, stopping and backups included. Two docker-compose modes are available: production and develop. Check [below](#docker-compose-modes) for further information
@@ -77,7 +82,29 @@ This repository contains files for running wordpress within a docker-compose man
 # Setup wordpress
 1. Navigate to your wordpress page and follow instructions.
 
-# Updating wordpress
-- use Webfrontend
+# Misc
+
+## Email
+- The official wordpress docker image is not able to send email (see this [Github issue](https://github.com/docker-library/wordpress/issues/30)) , so best practice is to use a wordpress plugin with a free plan for SMTP providers like Sendgrid or Mailgun. Recommended plugin is [https://wordpress.org/plugins/wp-mail-smtp/](https://wordpress.org/plugins/wp-mail-smtp/)
+
+## Updating wordpress
+- Use the webfrontend (auto)updater as the docker image files are only used on first start (see this [Github issue](https://github.com/docker-library/wordpress/issues/156)) 
+
+## Backup/Restore
+- Use one of the popular wordpress plugins for backup/restore/migration
+    - [https://wordpress.org/plugins/updraftplus/](https://wordpress.org/plugins/updraftplus/)
+    - [https://wordpress.org/plugins/duplicator/](https://wordpress.org/plugins/duplicator/)
+- Useful commands for migrating a wordpress instance with a change in baseurl
+- - Change baseurl 
+- - - Connect to mysqldb with `./develop.sh exec db sh -c 'exec mysql -uroot -p'`
+- - - Replace $OLD_BASE_URL and $NEW_BASE_URL accordingly 
+- - - ```UPDATE wp_options SET option_value = replace(option_value, '$OLD_BASE_URL', '$NEW_BASE_URL') WHERE option_name = 'home' OR option_name = 'siteurl';
+UPDATE wp_posts SET guid = replace(guid, '$OLD_BASE_URL','$NEW_BASE_URL');
+UPDATE wp_posts SET post_content = replace(post_content, '$OLD_BASE_URL', '$NEW_BASE_URL');```
+- - - ```UPDATE wp_postmeta SET meta_value = replace(meta_value,'$OLD_BASE_URL','$NEW_BASE_URL');```
+- - Change password of admin user
+- - - ```update wp_users SET user_pass = MD5('supersafepassword') where id=1;```
+
+
 
 Feel free to contribute, there are many improvements (check TODO strings in this repository) that still need to be made. 
