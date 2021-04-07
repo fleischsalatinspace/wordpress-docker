@@ -8,7 +8,6 @@ services:
         service: db
       environment:
         MYSQL_ROOT_PASSWORD: "${MYSQL_PASSWORD}"
-        MYSQL_USER: "${MYSQL_USER}"
       volumes:
               ##TODO: mysql docker image logs to sdout, so where do we get logs?
               - database-dev:/var/lib/mysql
@@ -21,7 +20,7 @@ services:
       env_file: "${ENV_FILE}"
       environment:
               WORDPRESS_DB_HOST: db
-              WORDPRESS_DB_USER: "${MYSQL_USER}"
+              WORDPRESS_DB_USER: root
               WORDPRESS_DB_PASSWORD: "${MYSQL_PASSWORD}"
               WORDPRESS_DB_NAME: "${COMPOSE_PROJECT_NAME}"
       depends_on:
