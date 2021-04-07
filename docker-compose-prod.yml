@@ -33,7 +33,9 @@ services:
       image: caddy:2-alpine
       container_name: ${COMPOSE_PROJECT_NAME}_caddy_prod
       ports: 
-        - "127.0.0.1:443:443"
+        - "443:443"
+        - "80:80"
+
       #TODO: create caddy-alpine based image with entrypoint to replace vhost config in caddy configfile
       #TODO: also log access-logs to sdout to replace the bind mount caddy-logs-prod
       volumes:
