@@ -16,3 +16,7 @@ pathfinder.lan {
 	format console
     }
 }
+
+www.pathfinder.lan {
+	redir https://pathfinder.lan[uri}
+}
