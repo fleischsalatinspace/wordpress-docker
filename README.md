@@ -20,16 +20,21 @@ Easy to use docker-compose managed multi-container setup for running wordpress
     3. [Backup/Restore](#Backup/Restore)
 
 ## Features
-This repository contains files for running wordpress within a docker-compose managed multi-container setup, based on the [official docker community image](https://hub.docker.com/_/wordpress)  To enable non-tech savy people to use this repository, there are [administration scripts](#Administration) for tasks like starting, stopping and backups included. Two docker-compose modes are available: production and develop. Check [below](#docker-compose-modes) for further information
+This repository contains files for running wordpress within a docker-compose managed multi-container setup, based on the [official docker community image](https://hub.docker.com/_/wordpress)  To enable non-tech savy people to use this repository, there are [administration scripts](#Administration) for tasks like starting, stopping and backups included. Two docker-compose modes are available: production and develop. Check [below](#docker-compose-modes) for further information.
 
 ## Requirements
-- Ubuntu 18.04 or 20.04
-- Docker Engine 20.10
-- docker-compose 1.27.4
+- Ubuntu > 18.04
+- Docker Engine > 20.10
+- docker-compose > 1.27.4
+
+## Software architecture
+- Reverse proxy: [caddy:2-alpine](https://hub.docker.com/_/caddy)
+- Application: [wordpress:latest](https://hub.docker.com/_/wordpress) (apache2 + php)
+- Database: [mysql:5.7](https://hub.docker.com/_/mysql)
 
 ## docker-compose modes
 ### Production
-- This mode is intended for running wordpress in a production environment.
+- This mode is intended for running wordpress in a production environment with a standalone caddy reverse proxy.
 - Beside listed requirements you need:
 - - Domain
 - - A/AAAA records pointing to your serverip
@@ -83,6 +88,16 @@ This repository contains files for running wordpress within a docker-compose man
 1. Navigate to your wordpress page and follow instructions.
 
 # Misc
+
+## Using an external docker managed reverse proxy
+- To use an external docker managed reverse proxy and omit the default caddy webserver, docker-compose files with the `no-caddy` syntax are available. These files are identical to the default files beside missing the caddy configuration.
+- - Adjust the COMPOSE_FILE variable in the `develop.sh` or `production.sh` files and add `-nocaddy`
+- - Rename or copy your `.env(.dev)` file to `.env(.dev)-nocaddy` and adjust the `ENV_FILE` variable inside the file accordingly
+- - Connect your external reverse proxy service to the `reverse-proxy-net` network and set `external: true` within the network definition in the compose file. The hostname of your wordpress service is exposed to `reverse-proxy-net` with the alias `wordpress_$(INSTANCE_NAME)`
+
+## Using an external non-docker managed reverse proxy
+- Stick to the same configuration as above, but adjust the wordpress service to bind to a localhost:port combination
+- Configure your external reverse proxy to proxy your domain to the localhost:port combination
 
 ## Email
 - The official wordpress docker image is not able to send email (see this [Github issue](https://github.com/docker-library/wordpress/issues/30)) , so best practice is to use a wordpress plugin with a free plan for SMTP providers like Sendgrid or Mailgun. Recommended plugin is [https://wordpress.org/plugins/wp-mail-smtp/](https://wordpress.org/plugins/wp-mail-smtp/)
