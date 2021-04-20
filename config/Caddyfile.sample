@@ -4,12 +4,14 @@
     email youremail@domain.com 
     # Optional staging lets encrypt for testing. Comment out for production.
     acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+    # Optional local tls certs. Comment out for production
     local_certs
     #debug
     admin off
 }
-pathfinder.lan {
-    reverse_proxy pathfinder:80
+wordpress.lan {
+    reverse_proxy wordpress_YOURINSTANCENAME:80
+    # comment out for production
     tls internal
     log {
     	output file /var/log/access.log
@@ -17,6 +19,6 @@ pathfinder.lan {
     }
 }
 
-www.pathfinder.lan {
-	redir https://pathfinder.lan[uri}
+www.wordpress.lan {
+	redir https://wordpress.lan[uri}
 }
