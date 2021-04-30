@@ -20,5 +20,5 @@ wordpress.lan {
 }
 
 www.wordpress.lan {
-	redir https://wordpress.lan[uri}
+	redir https://wordpress.lan{uri}
 }
